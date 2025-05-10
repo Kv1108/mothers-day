@@ -12,6 +12,7 @@
             margin: 0;
             padding: 0;
             touch-action: pan-y;
+            min-height: 100vh;
         }
         
         .carousel {
@@ -120,7 +121,7 @@
             position: absolute;
             z-index: 1;
             top: 0;
-            left: 90px;
+            left: 70px;
             width: 10px;
             height: 100%;
             border: 1px solid #fff;
@@ -142,16 +143,6 @@
             opacity: 0.4;
         }
         
-        .cursor {
-            display: none;
-        }
-        
-        @media (pointer: fine) {
-            .cursor {
-                display: block;
-            }
-        }
-        
         .heart {
             position: absolute;
             z-index: 10;
@@ -166,6 +157,116 @@
             0% { transform: scale(1); }
             50% { transform: scale(1.3); }
             100% { transform: scale(1); }
+        }
+        
+        /* Swipe instruction */
+        .swipe-instruction {
+            position: fixed;
+            bottom: 80px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            color: white;
+            font-size: 16px;
+            z-index: 100;
+            animation: fadeInOut 3s infinite;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            pointer-events: none;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            font-family: "Roboto", serif;
+        }
+        
+        .swipe-instruction .arrow {
+            font-size: 20px;
+            animation: swipe 2s infinite;
+            display: inline-block;
+        }
+        
+        @keyframes swipe {
+            0% { transform: translateX(0); opacity: 0; }
+            50% { transform: translateX(20px); opacity: 1; }
+            100% { transform: translateX(40px); opacity: 0; }
+        }
+        
+        @keyframes fadeInOut {
+            0%, 100% { opacity: 0.4; }
+            50% { opacity: 1; }
+        }
+        
+        /* Flower decorations */
+        .flowers {
+            position: fixed;
+            z-index: -1;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .flower {
+            position: absolute;
+            font-size: 25px;
+            animation: float 15s ease-in-out infinite;
+            opacity: 0.6;
+        }
+        
+        .flower:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+        
+        .flower:nth-child(2) {
+            top: 20%;
+            right: 20%;
+            animation-delay: 2s;
+        }
+        
+        .flower:nth-child(3) {
+            bottom: 15%;
+            left: 15%;
+            animation-delay: 4s;
+        }
+        
+        .flower:nth-child(4) {
+            bottom: 25%;
+            right: 10%;
+            animation-delay: 6s;
+        }
+        
+        .flower:nth-child(5) {
+            top: 50%;
+            left: 5%;
+            animation-delay: 8s;
+        }
+        
+        .flower:nth-child(6) {
+            top: 40%;
+            right: 5%;
+            animation-delay: 10s;
+        }
+        
+        @keyframes float {
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(10deg); }
+        }
+        
+        /* Header text */
+        .header {
+            position: fixed;
+            top: 20px;
+            left: 0;
+            right: 0;
+            text-align: center;
+            z-index: 100;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            pointer-events: none;
+            font-family: "Orelo-sw-db", serif;
         }
         
         /* Mobile optimizations */
@@ -187,6 +288,17 @@
     </style>
 </head>
 <body>
+
+    
+    <div class="flowers">
+        <div class="flower">🌸</div>
+        <div class="flower">🌷</div>
+        <div class="flower">💐</div>
+        <div class="flower">🌹</div>
+        <div class="flower">🌺</div>
+        <div class="flower">🏵️</div>
+    </div>
+    
     <div class="carousel">
         <div class="carousel-item">
             <div class="carousel-box">
@@ -227,7 +339,8 @@
                 <img src="image\IMG_20230701_135007.jpg" />
             </div>
         </div>
-        
+
+
         <div class="carousel-item">
             <div class="carousel-box">
                 <div class="title">I love you more than words can say ❤️</div>
@@ -237,14 +350,15 @@
         </div>
     </div>
     
+    <div class="swipe-instruction">
+        Swipe to Next <span class="arrow">→</span>
+    </div>
+    
     <div class="layout">
         <div class="box">Happy Mother's Day</div>
     </div>
     
     <div class="heart">❤</div>
-    
-    <div class="cursor"></div>
-    <div class="cursor cursor2"></div>
     
     <script>
         /*--------------------
@@ -270,6 +384,7 @@
         Items
         --------------------*/
         const $items = document.querySelectorAll('.carousel-item');
+        const $swipeInstruction = document.querySelector('.swipe-instruction');
         
         const displayItems = (item, index, active) => {
             const zIndex = getZindex([...$items], active)[index];
@@ -295,6 +410,11 @@
             item.addEventListener('click', () => {
                 progress = (i/$items.length) * 100 + 10;
                 animate();
+                // Hide instruction after first interaction
+                $swipeInstruction.style.opacity = '0';
+                setTimeout(() => {
+                    $swipeInstruction.style.display = 'none';
+                }, 500);
             });
         });
         
@@ -305,6 +425,11 @@
             const wheelProgress = e.deltaY * speedWheel;
             progress = progress + wheelProgress;
             animate();
+            // Hide instruction after first interaction
+            $swipeInstruction.style.opacity = '0';
+            setTimeout(() => {
+                $swipeInstruction.style.display = 'none';
+            }, 500);
         };
         
         const handleTouchMove = (e) => {
@@ -314,6 +439,11 @@
             progress = progress + touchProgress;
             startX = x;
             animate();
+            // Hide instruction after first interaction
+            $swipeInstruction.style.opacity = '0';
+            setTimeout(() => {
+                $swipeInstruction.style.display = 'none';
+            }, 500);
         };
         
         const handleMouseDown = e => {
@@ -335,23 +465,37 @@
         document.addEventListener('touchmove', handleTouchMove);
         document.addEventListener('touchend', handleMouseUp);
         
-        // Auto-rotate for mobile users
+        // Auto-rotate for mobile users - slower rotation
         let autoRotate = setInterval(() => {
-            progress = (progress + 1) % 100;
+            progress = (progress + 0.5) % 100;
             animate();
-        }, 3000);
+        }, 4000);
         
         // Pause auto-rotate when user interacts
         document.addEventListener('touchstart', () => {
             clearInterval(autoRotate);
+            // Hide instruction after first interaction
+            $swipeInstruction.style.opacity = '0';
+            setTimeout(() => {
+                $swipeInstruction.style.display = 'none';
+            }, 500);
         });
         
         document.addEventListener('touchend', () => {
+            // Auto-rotate slower after user interaction
             autoRotate = setInterval(() => {
-                progress = (progress + 1) % 100;
+                progress = (progress + 0.5) % 100;
                 animate();
-            }, 3000);
+            }, 4000);
         });
+        
+        // Hide swipe instruction after 15 seconds
+        setTimeout(() => {
+            $swipeInstruction.style.opacity = '0';
+            setTimeout(() => {
+                $swipeInstruction.style.display = 'none';
+            }, 500);
+        }, 30000);
     </script>
 </body>
 </html>
