@@ -159,43 +159,6 @@
             100% { transform: scale(1); }
         }
         
-        /* Swipe instruction */
-        .swipe-instruction {
-            position: fixed;
-            bottom: 80px;
-            left: 0;
-            right: 0;
-            text-align: center;
-            color: white;
-            font-size: 16px;
-            z-index: 100;
-            animation: fadeInOut 3s infinite;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
-            pointer-events: none;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            font-family: "Roboto", serif;
-        }
-        
-        .swipe-instruction .arrow {
-            font-size: 20px;
-            animation: swipe 2s infinite;
-            display: inline-block;
-        }
-        
-        @keyframes swipe {
-            0% { transform: translateX(0); opacity: 0; }
-            50% { transform: translateX(20px); opacity: 1; }
-            100% { transform: translateX(40px); opacity: 0; }
-        }
-        
-        @keyframes fadeInOut {
-            0%, 100% { opacity: 0.4; }
-            50% { opacity: 1; }
-        }
-        
         /* Flower decorations */
         .flowers {
             position: fixed;
@@ -269,6 +232,28 @@
             font-family: "Orelo-sw-db", serif;
         }
         
+        /* Progress bar for timer */
+        .progress-container {
+            position: fixed;
+            bottom: 40px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 70%;
+            max-width: 300px;
+            height: 5px;
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 10px;
+            z-index: 100;
+        }
+        
+        .progress-bar {
+            height: 100%;
+            width: 0;
+            background: white;
+            border-radius: 10px;
+            transition: width 0.1s linear;
+        }
+        
         /* Mobile optimizations */
         @media (max-width: 768px) {
             .carousel-item {
@@ -289,7 +274,6 @@
 </head>
 <body>
 
-    
     <div class="flowers">
         <div class="flower">🌸</div>
         <div class="flower">🌷</div>
@@ -340,7 +324,6 @@
             </div>
         </div>
 
-
         <div class="carousel-item">
             <div class="carousel-box">
                 <div class="title">I love you more than words can say ❤️</div>
@@ -350,8 +333,8 @@
         </div>
     </div>
     
-    <div class="swipe-instruction">
-        Swipe to Next <span class="arrow">→</span>
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
     </div>
     
     <div class="layout">
@@ -365,15 +348,7 @@
         Vars
         --------------------*/
         let progress = 10;
-        let startX = 0;
         let active = 0;
-        let isDown = false;
-        
-        /*--------------------
-        Contants
-        --------------------*/
-        const speedWheel = 0.02;
-        const speedDrag = -0.1;
         
         /*--------------------
         Get Z
@@ -384,7 +359,7 @@
         Items
         --------------------*/
         const $items = document.querySelectorAll('.carousel-item');
-        const $swipeInstruction = document.querySelector('.swipe-instruction');
+        const $progressBar = document.getElementById('progressBar');
         
         const displayItems = (item, index, active) => {
             const zIndex = getZindex([...$items], active)[index];
@@ -401,101 +376,66 @@
             
             $items.forEach((item, index) => displayItems(item, index, active));
         };
+        
+        // Initial animation
         animate();
         
         /*--------------------
-        Click on Items
+        Timer Animation
+        --------------------*/
+        // Time for each slide in milliseconds (3 seconds)
+        const slideTime = 3000;
+        let progressCounter = 0;
+        let timer;
+        
+        function startTimer() {
+            // Reset progress bar
+            progressCounter = 0;
+            
+            // Clear previous timer if exists
+            if (timer) clearInterval(timer);
+            
+            // Progress bar update interval (50ms for smooth animation)
+            const updateInterval = 50;
+            
+            // Update progress bar and slide
+            timer = setInterval(() => {
+                progressCounter += updateInterval;
+                
+                // Update progress bar width
+                const progressPercentage = (progressCounter / slideTime) * 100;
+                $progressBar.style.width = `${progressPercentage}%`;
+                
+                // Move to next slide when timer completes
+                if (progressCounter >= slideTime) {
+                    // Calculate next position - ensure we cycle through all 6 slides
+                    if (active >= $items.length - 1) {
+                        // If at the last image, go back to the first
+                        progress = 10;
+                    } else {
+                        // Otherwise go to the next image
+                        progress = ((active + 1) / ($items.length - 1)) * 100;
+                    }
+                    animate();
+                    progressCounter = 0;
+                }
+            }, updateInterval);
+        }
+        
+        // Start the timer animation immediately
+        startTimer();
+        
+        /*--------------------
+        Click on Items - Manual Control
         --------------------*/
         $items.forEach((item, i) => {
             item.addEventListener('click', () => {
-                progress = (i/$items.length) * 100 + 10;
+                progress = (i/($items.length-1)) * 100;
                 animate();
-                // Hide instruction after first interaction
-                $swipeInstruction.style.opacity = '0';
-                setTimeout(() => {
-                    $swipeInstruction.style.display = 'none';
-                }, 500);
+                // Restart timer
+                startTimer();
             });
         });
-        
-        /*--------------------
-        Handlers
-        --------------------*/
-        const handleWheel = e => {
-            const wheelProgress = e.deltaY * speedWheel;
-            progress = progress + wheelProgress;
-            animate();
-            // Hide instruction after first interaction
-            $swipeInstruction.style.opacity = '0';
-            setTimeout(() => {
-                $swipeInstruction.style.display = 'none';
-            }, 500);
-        };
-        
-        const handleTouchMove = (e) => {
-            if (!isDown) return;
-            const x = e.touches[0].clientX || 0;
-            const touchProgress = (x - startX) * speedDrag;
-            progress = progress + touchProgress;
-            startX = x;
-            animate();
-            // Hide instruction after first interaction
-            $swipeInstruction.style.opacity = '0';
-            setTimeout(() => {
-                $swipeInstruction.style.display = 'none';
-            }, 500);
-        };
-        
-        const handleMouseDown = e => {
-            isDown = true;
-            startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
-        };
-        
-        const handleMouseUp = () => {
-            isDown = false;
-        };
-        
-        /*--------------------
-        Listeners
-        --------------------*/
-        document.addEventListener('wheel', handleWheel);
-        document.addEventListener('mousedown', handleMouseDown);
-        document.addEventListener('mouseup', handleMouseUp);
-        document.addEventListener('touchstart', handleMouseDown);
-        document.addEventListener('touchmove', handleTouchMove);
-        document.addEventListener('touchend', handleMouseUp);
-        
-        // Auto-rotate for mobile users - slower rotation
-        let autoRotate = setInterval(() => {
-            progress = (progress + 0.5) % 100;
-            animate();
-        }, 4000);
-        
-        // Pause auto-rotate when user interacts
-        document.addEventListener('touchstart', () => {
-            clearInterval(autoRotate);
-            // Hide instruction after first interaction
-            $swipeInstruction.style.opacity = '0';
-            setTimeout(() => {
-                $swipeInstruction.style.display = 'none';
-            }, 500);
-        });
-        
-        document.addEventListener('touchend', () => {
-            // Auto-rotate slower after user interaction
-            autoRotate = setInterval(() => {
-                progress = (progress + 0.5) % 100;
-                animate();
-            }, 4000);
-        });
-        
-        // Hide swipe instruction after 15 seconds
-        setTimeout(() => {
-            $swipeInstruction.style.opacity = '0';
-            setTimeout(() => {
-                $swipeInstruction.style.display = 'none';
-            }, 500);
-        }, 30000);
     </script>
 </body>
 </html>
