@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Mother's Day ❤</title>
+    <style>
+        body {
+            overflow: hidden;
+            font-family: "Roboto", serif;
+            background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+            margin: 0;
+            padding: 0;
+            touch-action: pan-y;
+        }
+        
+        .carousel {
+            position: relative;
+            z-index: 1;
+            height: 100vh;
+            overflow: hidden;
+            pointer-events: none;
+        }
+        
+        .carousel-item {
+            --items: 6;
+            --width: clamp(200px, 60vw, 400px);
+            --height: clamp(300px, 60vh, 500px);
+            --x: calc(var(--active) * 800%);
+            --y: calc(var(--active) * 200%);
+            --rot: calc(var(--active) * 120deg);
+            --opacity: calc(var(--zIndex) / var(--items) * 3 - 2);
+            overflow: hidden;
+            position: absolute;
+            z-index: var(--zIndex);
+            width: var(--width);
+            height: var(--height);
+            margin: calc(var(--height) * -0.5) 0 0 calc(var(--width) * -0.5);
+            border-radius: 15px;
+            top: 50%;
+            left: 50%;
+            user-select: none;
+            transform-origin: 0% 100%;
+            box-shadow: 0 10px 50px 10px rgba(0, 0, 0, 0.2);
+            background: white;
+            pointer-events: all;
+            transform: translate(var(--x), var(--y)) rotate(var(--rot));
+            transition: transform 0.8s cubic-bezier(0, 0.02, 0, 1);
+        }
+        
+        .carousel-item .carousel-box {
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            transition: opacity 0.8s cubic-bezier(0, 0.02, 0, 1);
+            opacity: var(--opacity);
+            font-family: "Orelo-sw-db", serif;
+        }
+        
+        .carousel-item .carousel-box:before {
+            content: "";
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(to bottom, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0) 30%, rgba(0, 0, 0, 0) 50%, rgba(0, 0, 0, 0.5));
+        }
+        
+        .carousel-item .title {
+            position: absolute;
+            z-index: 1;
+            color: #fff;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            transition: opacity 0.8s cubic-bezier(0, 0.02, 0, 1);
+            font-size: clamp(18px, 4vw, 24px);
+            text-shadow: 0 4px 4px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.4);
+            border-radius: 10px;
+        }
+        
+        .carousel-item .num {
+            position: absolute;
+            z-index: 1;
+            color: #fff;
+            top: 10px;
+            left: 20px;
+            transition: opacity 0.8s cubic-bezier(0, 0.02, 0, 1);
+            font-size: clamp(20px, 10vw, 80px);
+            text-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+        }
+        
+        .carousel-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+        
+        .layout {
+            position: absolute;
+            z-index: 0;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+        }
+        
+        .layout:before {
+            content: "";
+            position: absolute;
+            z-index: 1;
+            top: 0;
+            left: 90px;
+            width: 10px;
+            height: 100%;
+            border: 1px solid #fff;
+            border-top: none;
+            border-bottom: none;
+            opacity: 0.15;
+        }
+        
+        .layout .box {
+            position: absolute;
+            bottom: 0;
+            left: 30px;
+            color: #fff;
+            transform-origin: 0% 10%;
+            transform: rotate(-90deg);
+            font-size: 9px;
+            line-height: 1.4;
+            text-transform: uppercase;
+            opacity: 0.4;
+        }
+        
+        .cursor {
+            display: none;
+        }
+        
+        @media (pointer: fine) {
+            .cursor {
+                display: block;
+            }
+        }
+        
+        .heart {
+            position: absolute;
+            z-index: 10;
+            bottom: 20px;
+            right: 20px;
+            color: #fff;
+            font-size: 30px;
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.3); }
+            100% { transform: scale(1); }
+        }
+        
+        /* Mobile optimizations */
+        @media (max-width: 768px) {
+            .carousel-item {
+                --width: clamp(250px, 80vw, 350px);
+                --height: clamp(350px, 80vh, 450px);
+            }
+            
+            .carousel-item .title {
+                font-size: clamp(16px, 5vw, 20px);
+                padding: 8px;
+            }
+            
+            .layout:before {
+                left: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="carousel">
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">Happy Mother's Day, Mumma! 💖</div>
+                <div class="num">01</div>
+                <img src="image\WhatsApp Image 2025-05-10 at 19.05.01_b7f74be9.jpg" />
+            </div>
+        </div>
+        
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">You're the heart of our family ✨</div>
+                <div class="num">02</div>
+                <img src="image\WhatsApp Image 2025-05-10 at 19.05.26_330e45e8.jpg" />
+            </div>
+        </div>
+        
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">Your love makes our house a home 🤗</div>
+                <div class="num">03</div>
+                <img src="image\IMG_0621.JPG" />
+            </div>
+        </div>
+        
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">World's Best Mom 🏆</div>
+                <div class="num">04</div>
+                <img src="image\IMG_20230701_135026.jpg" />
+            </div>
+        </div>
+        
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">Thank you for all you do 🌸</div>
+                <div class="num">05</div>
+                <img src="image\IMG_20230701_135007.jpg" />
+            </div>
+        </div>
+        
+        <div class="carousel-item">
+            <div class="carousel-box">
+                <div class="title">I love you more than words can say ❤️</div>
+                <div class="num">06</div>
+                <img src="image\IMG_20231114_085552.jpg" />
+            </div>
+        </div>
+    </div>
+    
+    <div class="layout">
+        <div class="box">Happy Mother's Day</div>
+    </div>
+    
+    <div class="heart">❤</div>
+    
+    <div class="cursor"></div>
+    <div class="cursor cursor2"></div>
+    
+    <script>
+        /*--------------------
+        Vars
+        --------------------*/
+        let progress = 10;
+        let startX = 0;
+        let active = 0;
+        let isDown = false;
+        
+        /*--------------------
+        Contants
+        --------------------*/
+        const speedWheel = 0.02;
+        const speedDrag = -0.1;
+        
+        /*--------------------
+        Get Z
+        --------------------*/
+        const getZindex = (array, index) => (array.map((_, i) => (index === i) ? array.length : array.length - Math.abs(index - i)));
+        
+        /*--------------------
+        Items
+        --------------------*/
+        const $items = document.querySelectorAll('.carousel-item');
+        
+        const displayItems = (item, index, active) => {
+            const zIndex = getZindex([...$items], active)[index];
+            item.style.setProperty('--zIndex', zIndex);
+            item.style.setProperty('--active', (index-active)/$items.length);
+        };
+        
+        /*--------------------
+        Animate
+        --------------------*/
+        const animate = () => {
+            progress = Math.max(0, Math.min(progress, 100));
+            active = Math.floor(progress/100*($items.length-1));
+            
+            $items.forEach((item, index) => displayItems(item, index, active));
+        };
+        animate();
+        
+        /*--------------------
+        Click on Items
+        --------------------*/
+        $items.forEach((item, i) => {
+            item.addEventListener('click', () => {
+                progress = (i/$items.length) * 100 + 10;
+                animate();
+            });
+        });
+        
+        /*--------------------
+        Handlers
+        --------------------*/
+        const handleWheel = e => {
+            const wheelProgress = e.deltaY * speedWheel;
+            progress = progress + wheelProgress;
+            animate();
+        };
+        
+        const handleTouchMove = (e) => {
+            if (!isDown) return;
+            const x = e.touches[0].clientX || 0;
+            const touchProgress = (x - startX) * speedDrag;
+            progress = progress + touchProgress;
+            startX = x;
+            animate();
+        };
+        
+        const handleMouseDown = e => {
+            isDown = true;
+            startX = e.clientX || (e.touches && e.touches[0].clientX) || 0;
+        };
+        
+        const handleMouseUp = () => {
+            isDown = false;
+        };
+        
+        /*--------------------
+        Listeners
+        --------------------*/
+        document.addEventListener('wheel', handleWheel);
+        document.addEventListener('mousedown', handleMouseDown);
+        document.addEventListener('mouseup', handleMouseUp);
+        document.addEventListener('touchstart', handleMouseDown);
+        document.addEventListener('touchmove', handleTouchMove);
+        document.addEventListener('touchend', handleMouseUp);
+        
+        // Auto-rotate for mobile users
+        let autoRotate = setInterval(() => {
+            progress = (progress + 1) % 100;
+            animate();
+        }, 3000);
+        
+        // Pause auto-rotate when user interacts
+        document.addEventListener('touchstart', () => {
+            clearInterval(autoRotate);
+        });
+        
+        document.addEventListener('touchend', () => {
+            autoRotate = setInterval(() => {
+                progress = (progress + 1) % 100;
+                animate();
+            }, 3000);
+        });
+    </script>
+</body>
+</html>
